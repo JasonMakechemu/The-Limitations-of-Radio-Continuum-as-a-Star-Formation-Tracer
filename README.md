@@ -5,7 +5,14 @@ We use machine learning techniques applied to observational data from VLA, COSMO
 
 In short - 1.4GHz radio luminosity is not an accurate tracer of star formation in any environment, however, the effectiveness of its tracer capabilities becomes even less reliable at flux densities above ~0.2mJy. This is where we see a larger omout of AGN in the COSMOS sample of galaxies, and it is where we expect a stronger contribution from other non star forming processes that still contribute to the radio continuum emission.
 
-Our first .py file contains the code that...
+offsets_iter.py - This script processes astronomical data for a list of galaxy clusters. It reads a catalog of radio sources, then queries the AllWISE catalog to find matching infrared sources. For each matched pair, the script calculates the positional offset and uses the WISE W4-band magnitude to estimate the star formation rate (SFR) of the source, based on the cluster's redshift. Finally, it saves the calculated offsets and SFRs into separate CSV files for each cluster.
 
-Our second .py file contains the code that...
+Predict_IR_SFR_from_Radio_Data.py - This script loads radio astronomy data from the VLA-COSMOS 3 GHz survey and uses various machine learning regression models — including Random Forest, Gradient Boosting, Neural Networks, Support Vector Regression, and others — to predict infrared star formation rates (IR SFR) from radio observations.
+
+It includes utilities for:
+
+Converting astronomical measurements (e.g., luminosity ↔ flux, angular distances)
+Splitting and scaling datasets
+Training and evaluating multiple regressors
+Plotting predictions, residuals, and redshift trends
 
