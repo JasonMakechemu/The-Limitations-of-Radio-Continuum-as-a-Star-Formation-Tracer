@@ -273,11 +273,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 X_sets = {
-    'Full': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
-    'Radio': (X_train_radio_scaled, X_test_radio_scaled, y_train_radio, y_test_radio),
-    'Radio + Photo-z': (X_train_radio_photo_z_scaled, X_test_radio_photo_z_scaled, y_train_radio_photo_z, y_test_radio_photo_z),
-    '3GHz only': (X_train_3GHz_scaled, X_test_3GHz_scaled, y_train_3GHz, y_test_3GHz),
-    '1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass),
+    #'Full': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
+    #'Radio': (X_train_radio_scaled, X_test_radio_scaled, y_train_radio, y_test_radio),
+    #'Radio + Photo-z': (X_train_radio_photo_z_scaled, X_test_radio_photo_z_scaled, y_train_radio_photo_z, y_test_radio_photo_z),
+    #'3GHz only': (X_train_3GHz_scaled, X_test_3GHz_scaled, y_train_3GHz, y_test_3GHz),
+    #'1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass),
     '1.4GHz only': (X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
 }
 
@@ -412,7 +412,7 @@ def train_and_evaluate(models, X_train, X_test, y_train, y_test):
 
 # Train and get predictions
 # Full feature set
-results_full, preds_full = train_and_evaluate(
+'''results_full, preds_full = train_and_evaluate(
     model_dict, X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full)
 
 # Radio luminosities only
@@ -430,7 +430,7 @@ results_3GHz, preds_3GHz = train_and_evaluate(
 #stellar mass also
 results_1_4GHz_stellar, preds_1_4GHz_stellar = train_and_evaluate(
     model_dict, X_train_1_4GHz_stellar_mass, X_test_1_4GHz_stellar_mass, y_train_full, y_test_full)
-
+'''
 # 1.4 GHz only
 results_1_4GHz, preds_1_4GHz = train_and_evaluate(
     model_dict, X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
@@ -438,7 +438,7 @@ results_1_4GHz, preds_1_4GHz = train_and_evaluate(
 #%%
 # Example for the 1.4 GHz model's predictions using Neural Network (MLP)
 y_pred_linear_1_4GHz = preds_1_4GHz['Neural Network (MLP)']
-y_pred_linear_1_4GHz_stellar_mass = preds_1_4GHz_stellar['Neural Network (MLP)']
+#y_pred_linear_1_4GHz_stellar_mass = preds_1_4GHz_stellar['Neural Network (MLP)']
 
 
 # Prepare DataFrame as before, using the 1.4 GHz test set
@@ -453,6 +453,7 @@ test_data_1_4GHz.reset_index(drop=True, inplace=True)
 test_data_1_4GHz.to_csv('test_dataset_1_4GHz_with_predictions.csv', index=False)
 
 #%%
+'''
 test_data_1_4GHz_stellar = X_test_1_4GHz_stellar_mass.copy()
 test_data_1_4GHz_stellar['log10_True_SFR'] = y_test_full
 test_data_1_4GHz_stellar['RA'] = data_clean.loc[X_test_1_4GHz_stellar_mass.index, 'RA']
@@ -463,7 +464,7 @@ test_data_1_4GHz_stellar['Redshift'] = data_clean.loc[X_test_1_4GHz_stellar_mass
 test_data_1_4GHz_stellar.reset_index(drop=True, inplace=True)
 test_data_1_4GHz_stellar.to_csv('test_dataset_1_4GHz_stellar_with_predictions.csv', index=False)
 
-
+'''
 
 #%%
 
@@ -553,18 +554,19 @@ def plot_true_vs_pred(results, title, color_by='redshift', bins=20, save_path=No
     plt.show()
 
 
-plot_true_vs_pred(results_1_4GHz_stellar, 
+plot_true_vs_pred(results_1_4GHz, 
                   title="Predicted vs True SFR", 
                   color_by='none', 
                   save_path='pred_vs_true_sfr.png',
                   data_clean=data_clean)
 
+'''
 plot_true_vs_pred(results_1_4GHz_stellar,
                    title="Predicted vs True SFR (Colored by Stellar Mass)",
                    color_by='stellar_mass',
                    save_path='pred_vs_true_sfr_stellar_mass.png',
                    data_clean=data_clean)
-
+'''
 #%%
 
 '''
@@ -666,8 +668,8 @@ def plot_residuals(results, title, color_by='redshift', save_path=None, data_cle
 
 # ==== Example Usage ====
 
-plot_true_vs_pred(results_full, "Full Model (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
-plot_residuals(results_full, "Full Model Residuals (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
+#plot_true_vs_pred(results_full, "Full Model (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
+#plot_residuals(results_full, "Full Model Residuals (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
 
 
 
@@ -689,14 +691,22 @@ Save plots for easy inspection and reporting.
 
 '''
 
+
+'''
+To avoid this error -> ValueError: X has 1 features, but MLPRegressor is expecting 2 features as input.
+
+Make sure the last feature set in the dictionaryhas the same numer of features (ideally the same model),
+that is being reshaped in the variable log_sfr_pred.
+'''
+
 # ==== Evaluate All Feature Sets ====
 feature_sets = {
-    'Full Features': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
-    'Radio Only': (X_train_radio_scaled, X_test_radio_scaled, y_train_radio, y_test_radio),
-    'Radio + z': (X_train_radio_photo_z_scaled, X_test_radio_photo_z_scaled, y_train_radio_photo_z, y_test_radio_photo_z),
-    '1.4 GHz Only': (X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz),
-    '3 GHz Only': (X_train_3GHz_scaled, X_test_3GHz_scaled, y_train_3GHz, y_test_3GHz),
-    '1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass)
+    #'Full Features': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
+    #'Radio Only': (X_train_radio_scaled, X_test_radio_scaled, y_train_radio, y_test_radio),
+    #'Radio + z': (X_train_radio_photo_z_scaled, X_test_radio_photo_z_scaled, y_train_radio_photo_z, y_test_radio_photo_z),
+    #'3 GHz Only': (X_train_3GHz_scaled, X_test_3GHz_scaled, y_train_3GHz, y_test_3GHz),
+    #'1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass),
+    '1.4 GHz Only': (X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
 }
 
 all_results = {}
@@ -798,7 +808,7 @@ def plot_residuals_vs_redshift(results, X_test, y_test_log, redshift_col='Photom
 
 # Unpack the tuple returned by train_and_evaluate
 results_1_4GHz, _ = train_and_evaluate(model_dict, X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
-results_1_4GHz_stellar, _ = train_and_evaluate(model_dict, X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass)
+#results_1_4GHz_stellar, _ = train_and_evaluate(model_dict, X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass)
 
 # Unscaled test set needed for redshift values
 X_test_1_4GHz_unscaled = X_test_1_4GHz.copy()
@@ -1075,6 +1085,10 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+
+
+
 
 
 # ==== 1. Load pre-trained forward model and scaler (log L_1.4GHz → log SFR) ====
@@ -1668,9 +1682,10 @@ inverse_mlp = joblib.load("inverse_mlp_model.pkl")
 sfr_scaler = joblib.load("sfr_scaler.pkl")
 L_scaler = joblib.load("L_scaler.pkl")
 
-# === 2. Load new predicted SFRs from CSV === 
-#input_csv = '/Users/jason/Desktop/Starbirth - Oxford Toomre Q Project/Project/test_dataset_1_4GHz_with_predictions.csv'
-input_csv = '/Users/jason/Desktop/Starbirth - Oxford Toomre Q Project/Project/test_dataset_1_4GHz_stellar_with_predictions.csv'
+# === 2. Load new predicted SFRs from CSV ===
+input_csv = '/Users/jason/Desktop/Starbirth - Oxford Toomre Q Project/Project/test_dataset_1_4GHz_with_predictions.csv'
+#input_csv = '/Users/jason/Desktop/Starbirth - Oxford Toomre Q Project/Project/test_dataset_1_4GHz_stellar_with_predictions.csv' including stellar mass in the model
+
 
 df = pd.read_csv(input_csv)
 
@@ -1692,13 +1707,15 @@ log10_L_scaled_pred = inverse_mlp.predict(log10_sfr_scaled).reshape(-1, 1)
 log10_L_pred = L_scaler.inverse_transform(log10_L_scaled_pred).flatten()
 
 # === 6. Save predictions to CSV ===
-#df['Predicted_log10_L_1.4GHz_inverse_model'] = log10_L_pred
-#output_csv = 'predicted_L_1.4GHz_from_SFR_inverse_model.csv'
+df['Predicted_log10_L_1.4GHz_inverse_model'] = log10_L_pred
+output_csv = 'predicted_L_1.4GHz_from_SFR_inverse_model.csv'
+df.to_csv(output_csv, index=False, float_format="%.10f")
+
+# including stellar mass in the model
+#df['Predicted_log10_L_1.4GHz_stellar_inverse_model'] = log10_L_pred
+#output_csv = 'predicted_L_1.4GHz_stellar_from_SFR_inverse_model.csv'
 #df.to_csv(output_csv, index=False, float_format="%.10f")
 
-df['Predicted_log10_L_1.4GHz_stellar_inverse_model'] = log10_L_pred
-output_csv = 'predicted_L_1.4GHz_stellar_from_SFR_inverse_model.csv'
-df.to_csv(output_csv, index=False, float_format="%.10f")
 
 print(f"✅ Inverse model prediction complete. Results saved to '{output_csv}'.")
 
@@ -2116,7 +2133,7 @@ from astropy import units as u
 import matplotlib.pyplot as plt
 
 # Load the CSV file
-csv_df = pd.read_csv('predicted_L_1.4GHz_stellar_from_SFR_inverse_model.csv')
+csv_df = pd.read_csv('predicted_L_1.4GHz_from_SFR_inverse_model.csv')
 
 # Load the FITS file
 with fits.open('/Users/jason/Downloads/COSMOS_VLA_Deblended.fits') as hdul:
@@ -2161,7 +2178,7 @@ fits_matched = fits_df.iloc[idx[matched]].reset_index(drop=True)
 
 # Example: scatter plot of a column from csv vs a column from fits
 # Replace 'Predicted_L' and 'Measured_L' with actual column names you want to plot
-plt.scatter(csv_matched['Radio_Luminosity_1.4GHz'], csv_matched['Predicted_log10_L_1.4GHz_stellar_inverse_model'], s=10, alpha=0.6)
+plt.scatter(csv_matched['Radio_Luminosity_1.4GHz'], csv_matched['Predicted_log10_L_1.4GHz_inverse_model'], s=10, alpha=0.6)
 plt.xlabel('true L')
 plt.ylabel('Predicted L (from COSMOS VLA)')
 plt.title('True Luminosity vs Predicted Luminosity')
@@ -2183,7 +2200,7 @@ plt.show()
 
 
 
-plt.scatter(csv_matched['log10_True_SFR'], csv_matched['Predicted_log10_L_1.4GHz_stellar_inverse_model'], s=10, alpha=0.6)
+plt.scatter(csv_matched['log10_True_SFR'], csv_matched['Predicted_log10_L_1.4GHz_inverse_model'], s=10, alpha=0.6)
 plt.xlabel('true SFR')
 plt.ylabel('Predicted L (from COSMOS VLA)')
 plt.title('True SFR vs Predicted Luminosity')
@@ -2193,7 +2210,7 @@ plt.show()
 
 
 
-plt.scatter(np.log10(csv_matched['Predicted_SFR']), csv_matched['Predicted_log10_L_1.4GHz_stellar_inverse_model'], s=10, alpha=0.6)
+plt.scatter(np.log10(csv_matched['Predicted_SFR']), csv_matched['Predicted_log10_L_1.4GHz_inverse_model'], s=10, alpha=0.6)
 plt.xlabel('Predicted SFR')
 plt.ylabel('Predicted L (from COSMOS VLA)')
 plt.title('Predicted SFR vs Predicted Luminosity')
@@ -2215,7 +2232,7 @@ final_alpha = 0.7  # spectral index
 
 def luminosity_to_flux(row):
     final_redshift = row['z_phot']
-    final_log10_L = row['Predicted_log10_L_1.4GHz_stellar_inverse_model']
+    final_log10_L = row['Predicted_log10_L_1.4GHz_inverse_model']
     
     final_D_L_m = final_cosmo.luminosity_distance(final_redshift).value * 3.085677581e22
     final_L = 10**final_log10_L  # W/Hz
@@ -2480,7 +2497,7 @@ final_csv_df.loc[final_matched, 'xf20cm'] = final_fits_df.iloc[final_matched_fit
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.scatter(final_csv_df['Predicted_log10_L_1.4GHz_stellar_inverse_model'], final_csv_df['xf20cm'])
+plt.scatter(final_csv_df['Predicted_log10_L_1.4GHz_inverse_model'], final_csv_df['xf20cm'])
 plt.xlabel('Log10 of Predicted Flux Density (mJy ML)')
 plt.ylabel('Log10 of Predicted Flux Density (mJy SED)')
 plt.title('Scatter Plot of Log10 Predicted Flux Density vs Log10 xf20cm')
@@ -3598,33 +3615,51 @@ print(summary_df)
 #%%
 
 
+labels = summary_df['subset']
+x = np.arange(len(labels))
+
+# Extract values and errors
+mean_gmm = summary_df['mean_gmm']
+median_gmm = summary_df['median_gmm']
+mean_gmm_err = summary_df['std_gmm']
+median_gmm_err = summary_df['mad_gmm']
+
+mean_spearman = summary_df['mean_spearman']
+median_spearman = summary_df['median_spearman']
+mean_spearman_err = summary_df['std_spearman']
+median_spearman_err = summary_df['mad_spearman']
+
+# Create side-by-side subplots
 fig, axs = plt.subplots(1, 2, figsize=(10, 8), sharey=True)
 
 # GMM subplot
-axs[0].bar(x - 0.15, mean_gmm, 0.3, yerr=mean_gmm_err, capsize=5, label='Mean', color='steelblue')
-axs[0].bar(x + 0.15, median_gmm, 0.3, yerr=median_gmm_err, capsize=5, label='Median', color='skyblue')
+axs[0].bar(x - 0.15, mean_gmm, 0.3, yerr=mean_gmm_err, capsize=5,
+           label='Mean', color='steelblue')
+axs[0].bar(x + 0.15, median_gmm, 0.3, yerr=median_gmm_err, capsize=5,
+           label='Median', color='skyblue')
 axs[0].set_title('GMM Breakpoints')
 axs[0].set_xticks(x)
-axs[0].set_xticklabels(labels)
+axs[0].set_xticklabels(labels, rotation=45, ha='right')
 axs[0].legend()
 axs[0].grid(True, axis='y', linestyle='--', alpha=0.7)
 
 # Spearman subplot
-axs[1].bar(x - 0.15, mean_spearman, 0.3, yerr=mean_spearman_err, capsize=5, label='Mean', color='indianred')
-axs[1].bar(x + 0.15, median_spearman, 0.3, yerr=median_spearman_err, capsize=5, label='Median', color='salmon')
+axs[1].bar(x - 0.15, mean_spearman, 0.3, yerr=mean_spearman_err, capsize=5,
+           label='Mean', color='indianred')
+axs[1].bar(x + 0.15, median_spearman, 0.3, yerr=median_spearman_err, capsize=5,
+           label='Median', color='salmon')
 axs[1].set_title('Spearman Breakpoints')
 axs[1].set_xticks(x)
-axs[1].set_xticklabels(labels)
+axs[1].set_xticklabels(labels, rotation=45, ha='right')
 axs[1].legend()
 axs[1].grid(True, axis='y', linestyle='--', alpha=0.7)
 
-fig.suptitle('Breakpoints Comparison (Mean vs Median)')
-plt.tight_layout()
+# Main title and layout
+fig.suptitle('Breakpoints Comparison (Mean vs Median)', fontsize=14)
+fig.tight_layout(rect=[0, 0, 1, 0.95])  # Leave space for suptitle
+
 plt.savefig("breakpoint_comparison.png", dpi=300)
 plt.show()
-
-
-
 
 
 
