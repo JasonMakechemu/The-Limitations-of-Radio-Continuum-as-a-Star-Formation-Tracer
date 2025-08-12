@@ -6,8 +6,6 @@ Created on Thu May  1 12:53:28 2025
 @author: jason
 """
 
-
-
 '''
 Importation of all our functions, including a variety of regression models
 and tools from the scikit-learn machine learning library.
@@ -165,13 +163,6 @@ plt.show()
 #%%
 
 
-
-
-
-
-#%%
-
-
 '''
 
 For the COSMOS-VLA dataset
@@ -265,8 +256,6 @@ model_dict = {
 #%%
 
 
-
-
 # ==== Evaluation ====
 from sklearn.metrics import mean_absolute_error, median_absolute_error, r2_score
 import matplotlib.pyplot as plt
@@ -280,7 +269,6 @@ X_sets = {
     #'1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass),
     '1.4GHz only': (X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
 }
-
 
 
 
@@ -322,8 +310,6 @@ for set_name, (X_train, X_test, y_train, y_test) in X_sets.items():
         plt.xlabel("Residual (log SFR)")
         plt.tight_layout()
         plt.show()
-
-
 
 
 
@@ -471,6 +457,10 @@ test_data_1_4GHz_stellar.to_csv('test_dataset_1_4GHz_stellar_with_predictions.cs
 '''
 For COSMOS VLA dataset
 '''
+import matplotlib as mpl
+
+mpl.rcParams['mathtext.fontset'] = 'cm'
+mpl.rcParams['font.family'] = 'serif'
 
 def plot_true_vs_pred(results, title, color_by='redshift', bins=20, save_path=None, data_clean=None):
     plt.figure(figsize=(18, 10))
@@ -535,8 +525,8 @@ def plot_true_vs_pred(results, title, color_by='redshift', bins=20, save_path=No
         plt.plot([min(df['true']), max(df['true'])], [min(df['true']), max(df['true'])], 'k--', lw=2)
 
         plt.title(name)
-        plt.xlabel(r'True $\log(\mathrm{SFR})$ $\log(M_\odot\,\mathrm{yr}^{-1})$')
-        plt.ylabel(r'Predicted $\log(\mathrm{SFR})$ $\log(M_\odot\,\mathrm{yr}^{-1})$')
+        plt.xlabel(r'True $\log(\mathrm{SFR})$ $\log(M_\odot\,\mathrm{yr}^{-1})$', fontsize=14)
+        plt.ylabel(r'Predicted $\log(\mathrm{SFR})$ $\log(M_\odot\,\mathrm{yr}^{-1})$', fontsize=14)
 
         plt.grid(True)
         plt.text(0.95, 0.95, f'MAE: {mae_pct:.2f}%\nMedian Error: {med_pct:.2f}%',
@@ -578,8 +568,6 @@ Residuals = True SFR − Predicted SFR (in linear space, not log)
 Colored by a variable of choice ('1.4GHz', 'redshift', etc.)
 Gives insight into biases, trends, or systematic errors in the predictions.
 '''
-
-
 
 def plot_residuals(results, title, color_by='redshift', save_path=None, data_clean=data_clean):
     """
@@ -661,17 +649,6 @@ def plot_residuals(results, title, color_by='redshift', save_path=None, data_cle
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.show()
 
-# ==== Example Usage ====
-# results_full and data_clean would be defined elsewhere in the user's script
-# Assuming results_full is a dictionary of model results
-# plot_residuals(results_full, "Full Model Residuals (Coloured by Stellar Mass)", color_by='stellar_mass')
-
-# ==== Example Usage ====
-
-#plot_true_vs_pred(results_full, "Full Model (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
-#plot_residuals(results_full, "Full Model Residuals (Coloured by 1.4 GHz Luminosity)", color_by='1.4GHz', data_clean=data_clean)
-
-
 
 
 #%%
@@ -744,9 +721,6 @@ for name, (X_train, X_test, y_train, y_test) in feature_sets.items():
                        color_by=color_by,
                        save_path=residuals_path,
                        data_clean=data_clean)
-
-
-
 
 
 
@@ -917,12 +891,6 @@ true_log = plot_predicted_vs_true_sfr_redshift(
 
 
 
-
-
-
-
-
-
 #%%
 
 
@@ -987,10 +955,6 @@ plot_scatter_vs_redshift(best_model_name, y_true_log, y_pred_log, z_vals, bins=2
 
 
 #%%
-
-
-
-
 
 
 
@@ -1059,23 +1023,7 @@ R^2 Score: -0.2362
 This is a strong indication that the model has not learned a meaningful relationship between
 radio luminosity and SFR.
 
-
-
-    
-    
-    
-    
-    
 '''
-
-
-
-
-
-
-
-
-
 
 
 from sklearn.pipeline import make_pipeline
@@ -1085,9 +1033,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
-
 
 
 
@@ -1228,40 +1173,7 @@ print(f"Forward model RMSE: {rmse:.4f}")
 print(f"Forward model R² score: {r2:.4f}")
 
 
-
-
-
-
-
-
 #%%%
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 '''
@@ -1290,8 +1202,6 @@ vice versa. This can be common when the target variable in the forward model (SF
 has more variance or noise, making learning hard.
 
 '''
-
-
 
 
 #%%
@@ -1365,9 +1275,6 @@ for name, z in zip(cluster_names, redshifts):
     df.to_csv(output_file, index=False)
 
     print(f"Processed {name}: saved to {output_file}")
-
-
-
 
 
 
@@ -1497,14 +1404,6 @@ print("\nProcessing complete.")
 
 #%%
 
-
-
-
-
-
-
-
-#%%
 
 '''
 Plotting COSMOS SED fitting true vs predicted flux density
@@ -1665,13 +1564,9 @@ plt.show()
 
 #%%
 
-
-
 '''
 Reversing to get predicted luminosity again. In cosmos
 '''
-
-
 
 import numpy as np
 import pandas as pd
@@ -1718,15 +1613,6 @@ df.to_csv(output_csv, index=False, float_format="%.10f")
 
 
 print(f"✅ Inverse model prediction complete. Results saved to '{output_csv}'.")
-
-
-
-
-
-
-
-
-
 
 
 # Plot
@@ -1833,11 +1719,6 @@ for cluster in clusters:
 
 
 
-
-
-
-
-
 #%%
 
 
@@ -1854,8 +1735,6 @@ Colour based on Flux ratio
 make histogram of sources with their SFR contributions
 
 make ML predicted COSMOS plot
-
-
 
 
 
@@ -2268,8 +2147,12 @@ csv_matched.to_csv('the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv', i
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+import matplotlib as mpl
+mpl.rcParams['mathtext.fontset'] = 'cm'
+mpl.rcParams['font.family'] = 'serif'
+
 # Set style
-sns.set(style="whitegrid")
+#sns.set(style="whitegrid")
 
 # Define min/max for consistent axes
 min_val = min(csv_matched['Predicted_flux_mJy'].min(), csv_matched['True_flux_mJy'].min())
@@ -2507,11 +2390,6 @@ plt.grid(True)
 plt.show()
 
 
-
-
-
-
-
 '''
 For ML: The ML model might not have converged, been trained on insufficient data,
 or had hyperparameter settings that prevented it from learning any meaningful patterns.
@@ -2525,36 +2403,7 @@ to essentially random parameter recovery for the flux density.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #%%
-
-
 
 
 
@@ -2798,7 +2647,7 @@ plt.bar(
 )
 plt.xticks(ticks=[0, 1], labels=xtick_labels)
 plt.ylabel('Fraction of AGN Sources')
-plt.title('AGN Fraction per GMM Cluster (COSMOS)')
+plt.title('AGN Fraction per GMM Cluster (COSMOS)', pad=20)  # default is ~6
 plt.ylim(0, 1)
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
@@ -2809,8 +2658,6 @@ plt.show()
 
 
 #%%
-
-
 
 
 
@@ -2826,29 +2673,70 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 
 
-# --- Helper functions ---
+# --- Imports ---
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import spearmanr, chi2
+from sklearn.mixture import GaussianMixture
 
+from astropy.coordinates import SkyCoord
+from astropy import units as u
+from astropy.cosmology import Planck18 as cosmo
+
+
+# --- Helper functions ---
 def r500_to_angular_deg(r500_mpc, z):
+    """
+    Convert r500 (in Mpc) at redshift z to an angular size in degrees using Planck18 cosmology.
+    """
     ang_rad = r500_mpc / cosmo.angular_diameter_distance(z).value
     return np.degrees(ang_rad)
 
 def angular_distance_deg(ra1, dec1, ra2, dec2):
+    """
+    Great-circle separation between (ra1, dec1) and (ra2, dec2) in degrees.
+    """
     c1 = SkyCoord(ra=ra1*u.deg, dec=dec1*u.deg)
     c2 = SkyCoord(ra=ra2*u.deg, dec=dec2*u.deg)
     return c1.separation(c2).deg
 
 
+# --- Main analysis ---
 def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./'):
     """
-    Run the GMM + Spearman correlation analysis on provided data subset.
-    Saves a 2-panel plot for the cluster + data subset.
+    Run GMM + binned Spearman correlation analysis and save a 2-panel plot.
+
+    Parameters
+    ----------
+    cluster_name : str
+        Name of the cluster (used for plot title & filename).
+    data : pandas.DataFrame
+        Must contain columns:
+          - 'Predicted_SFR_Msun_per_yr_from_L'
+          - 'SFR_Msun_per_yr'
+          - 'observed_flux_in_cluster'   (mJy, positive)
+          - 'flux_ratio'                 (Predicted/Observed flux density ratio or similar)
+    exclude_outliers : bool
+        If True, exclude points with SFR ratio > 2σ from the mean before analysis.
+    save_dir : str
+        Directory where the PNG will be saved.
+
+    Returns
+    -------
+    dict with keys:
+      - 'cluster'
+      - 'gmm_breakpoint' (linear mJy)
+      - 'spearman_breakpoint' (linear mJy, center of bin with |rho| max)
+      - 'max_rho'
+      - 'combined_pval'
     """
 
-    if data.empty:
+    if data is None or data.empty:
         print(f"⚠️ No data for {cluster_name} in this subset, skipping.")
         return None
 
-    # Compute SFR ratio and identify outliers
+    # --- Compute SFR ratio and outliers ---
     gmm_sfr_ratio = data['Predicted_SFR_Msun_per_yr_from_L'] / data['SFR_Msun_per_yr']
     sfr_ratio_mean = gmm_sfr_ratio.mean()
     sfr_ratio_std = gmm_sfr_ratio.std()
@@ -2856,27 +2744,28 @@ def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./
 
     if exclude_outliers:
         data_filtered = data.loc[~outlier_mask].copy()
-        gmm_sfr_ratio_filtered = gmm_sfr_ratio.loc[~outlier_mask].copy()
     else:
         data_filtered = data.copy()
-        gmm_sfr_ratio_filtered = gmm_sfr_ratio.copy()
 
     if data_filtered.empty:
         print(f"⚠️ No data left after excluding outliers for {cluster_name}, skipping.")
         return None
 
-    # Prepare for Spearman correlation binning
-    bin_fraction = 0.1  # 10% per bin
+    # --- Prepare arrays for Spearman binning ---
+    # Add small epsilon to avoid log(0)
+    eps = 1e-5
+    flux = data_filtered['observed_flux_in_cluster'].to_numpy()
+    log_flux = np.log10(flux + eps)
+    ratio = data_filtered['flux_ratio'].to_numpy()
+
+    # Sort by log_flux for contiguous bins
+    sort_idx = np.argsort(log_flux)
+    log_flux_sorted = log_flux[sort_idx]
+    ratio_sorted = ratio[sort_idx]
+
+    # Bin parameters
+    bin_fraction = 0.10           # 10% per bin
     min_points_per_bin = 20
-
-    flux = data_filtered['observed_flux_in_cluster'].values
-    log_flux = np.log10(flux + 1e-5)
-    ratio = data_filtered['flux_ratio'].values
-
-    sorted_indices = np.argsort(log_flux)
-    log_flux_sorted = log_flux[sorted_indices]
-    ratio_sorted = ratio[sorted_indices]
-
     N = len(log_flux_sorted)
     bin_size = max(int(N * bin_fraction), min_points_per_bin)
 
@@ -2884,75 +2773,76 @@ def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./
     spearman_rhos = []
     spearman_pvals = []
 
-    for start_idx in range(0, N, bin_size):
-        end_idx = start_idx + bin_size
-        if end_idx > N:
+    for start in range(0, N, bin_size):
+        end = start + bin_size
+        if end > N:
             break
-        x_bin = log_flux_sorted[start_idx:end_idx]
-        y_bin = ratio_sorted[start_idx:end_idx]
+        x_bin = log_flux_sorted[start:end]
+        y_bin = ratio_sorted[start:end]
         rho, pval = spearmanr(x_bin, y_bin)
         if np.isnan(rho):
-            rho = 0.0
-            pval = 1.0
-        bin_centers.append(np.median(10 ** x_bin))
+            rho, pval = 0.0, 1.0
+        # Convert median in log-space back to linear mJy for plotting on log-x
+        bin_centers.append(np.median(10**x_bin))
         spearman_rhos.append(rho)
         spearman_pvals.append(pval)
 
-    # Prepare input for GMM
-    X_for_gmm = np.log10(data_filtered[['observed_flux_in_cluster', 'flux_ratio']].values + 1e-5)
-
-    # Fit GMM
+    # --- GMM on log10(flux) & log10(ratio) ---
+    X_for_gmm = np.log10(data_filtered[['observed_flux_in_cluster', 'flux_ratio']].to_numpy() + eps)
     gmm = GaussianMixture(n_components=2, covariance_type='full', random_state=42)
     gmm.fit(X_for_gmm)
     labels = gmm.predict(X_for_gmm)
 
     print(f"✅ GMM applied for {cluster_name}. Found {gmm.n_components} components.")
 
-    # Consistent labeling of clusters by mean flux_ratio
-    mean_flux_ratio_comp0 = data_filtered['flux_ratio'][labels == 1].mean()
-    mean_flux_ratio_comp1 = data_filtered['flux_ratio'][labels == 0].mean()
+    # Make labels consistent by mean flux_ratio in original (linear) space
+    # Map each component id -> mean flux_ratio
+    comp_ids = np.unique(labels)
+    comp_means = {cid: data_filtered['flux_ratio'].to_numpy()[labels == cid].mean()
+                  for cid in comp_ids}
+    # Sort components so that component 0 has lower mean flux_ratio
+    order = sorted(comp_means, key=lambda cid: comp_means[cid])
+    remap = {order[0]: 0, order[1]: 1}
+    consistent_labels = np.vectorize(remap.get)(labels)
 
-    consistent_labels = np.zeros_like(labels)
-    if mean_flux_ratio_comp0 < mean_flux_ratio_comp1:
-        consistent_labels[labels == 0] = 0
-        consistent_labels[labels == 1] = 1
-    else:
-        consistent_labels[labels == 0] = 1
-        consistent_labels[labels == 1] = 0
-
-    # Compute GMM breakpoint
+    # --- GMM breakpoint + half-distance band (computed in log space) ---
+    # Means are in (log10(flux), log10(ratio)); take the flux axis (col 0)
     cluster_centers = gmm.means_
-    x_means = cluster_centers[:, 0]
-    x_sep = np.mean(x_means)  # midpoint in log space
-    half_dist_log = np.abs(x_means[1] - x_means[0]) / 2
-    error1_linear = 10 ** (x_sep + half_dist_log) - 10 ** x_sep
-    x_sep_linear = 10 ** x_sep
+    x_means_log = cluster_centers[:, 0]
+    x_sep_log = np.mean(x_means_log)  # midpoint in log10 space
+    half_dist_log = 0.5 * np.abs(x_means_log[1] - x_means_log[0])
+
+    # Convert back to linear for plotting on log x-axis (asymmetric in linear space by design)
+    x_sep_linear = 10**x_sep_log
+    x_low_linear = 10**(x_sep_log - half_dist_log)
+    x_high_linear = 10**(x_sep_log + half_dist_log)
     gmm_breakpoint = x_sep_linear
 
-    # Determine Spearman breakpoint
+    # --- Determine Spearman "breakpoint" as bin with max |rho| ---
     if spearman_rhos:
-        max_rho_idx = np.argmax(np.abs(spearman_rhos))
-        spearman_breakpoint = bin_centers[max_rho_idx]
-        max_rho = spearman_rhos[max_rho_idx]
+        max_rho_idx = int(np.argmax(np.abs(spearman_rhos)))
+        spearman_breakpoint = float(bin_centers[max_rho_idx])
+        max_rho = float(spearman_rhos[max_rho_idx])
     else:
         spearman_breakpoint = np.nan
         max_rho = np.nan
 
-    # Combine p-values with Fisher's method
-    pvals_array = np.clip(np.array(spearman_pvals), 1e-15, 1)
-    statistic = -2 * np.sum(np.log(pvals_array))
+    # --- Combine p-values with Fisher's method ---
+    pvals_array = np.clip(np.asarray(spearman_pvals, dtype=float), 1e-15, 1.0)
+    statistic = -2.0 * np.sum(np.log(pvals_array))
     dof = 2 * len(pvals_array)
     combined_pval = 1 - chi2.cdf(statistic, dof)
 
     print(f"Combined Fisher p-value for cluster {cluster_name}: {combined_pval:.3e}")
     print(f"Spearman p-values for each bin in cluster {cluster_name}:")
     for center, pval in zip(bin_centers, spearman_pvals):
-        print(f"Bin center (Observed Flux) ≈ {center:.4f} mJy, p-value = {pval:.4e}")
+        print(f"  Bin center (Observed Flux) ≈ {center:.4f} mJy, p-value = {pval:.4e}")
 
     # --- Plotting ---
     fig, axes = plt.subplots(1, 2, figsize=(14, 5), sharex=False)
+    ax1, ax2 = axes
 
-    ax1 = axes[0]
+    # Panel 1: Scatter with GMM coloring
     ax1.set_xscale('log')
     ax1.set_yscale('log')
     ax1.set_xlabel('Observed Flux Density [mJy]', fontsize=14)
@@ -2961,83 +2851,77 @@ def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./
     ax1.grid(True, which="both", ls="-", alpha=0.2)
 
     if exclude_outliers:
-        # Plot only the non-outliers
-        scatter = ax1.scatter(
+        # plot only non-outliers
+        sc = ax1.scatter(
             data.loc[~outlier_mask, 'observed_flux_in_cluster'],
             data.loc[~outlier_mask, 'flux_ratio'],
-            c=consistent_labels,
-            cmap='coolwarm',
-            alpha=0.7,
-            marker='o',
-            label='Within 2σ SFR Ratio'
+            c=consistent_labels[outlier_mask.values == False],
+            cmap='coolwarm', alpha=0.7, marker='o'
         )
     else:
-        # Plot non-outliers with circles
-        scatter1 = ax1.scatter(
+        # plot non-outliers
+        ax1.scatter(
             data.loc[~outlier_mask, 'observed_flux_in_cluster'],
             data.loc[~outlier_mask, 'flux_ratio'],
-            c=consistent_labels[outlier_mask == False],
-            cmap='coolwarm',
-            alpha=0.7,
-            marker='o',
+            c=consistent_labels[outlier_mask.values == False],
+            cmap='coolwarm', alpha=0.7, marker='o'
         )
-        # Plot outliers with triangles
-        '''scatter2 = ax1.scatter(
-            data.loc[outlier_mask, 'observed_flux_in_cluster'],
-            data.loc[outlier_mask, 'flux_ratio'],
-            c='black',
-            cmap='none',
-            alpha=0.7,
-            marker='^',
-            label='>2σ SFR Ratio'
-        )'''
+        # (Optional) plot outliers differently; uncomment to show triangles
+        # ax1.scatter(
+        #     data.loc[outlier_mask, 'observed_flux_in_cluster'],
+        #     data.loc[outlier_mask, 'flux_ratio'],
+        #     c='black', alpha=0.7, marker='^', label='>2σ SFR Ratio'
+        # )
+        
+    err_minus_linear = x_sep_linear - x_low_linear
+    err_plus_linear  = x_high_linear - x_sep_linear
+    err_linear_avg   = 0.5 * (err_minus_linear + err_plus_linear)
 
-    ax1.legend()
+    # GMM breakpoint & half-distance band on scatter panel
+    ax1.axvline(x_sep_linear, color='k', linestyle='--', linewidth=1, zorder=3,
+                label=f'GMM break = {x_sep_linear:.2g} mJy')
+    ax1.axvspan(x_low_linear, x_high_linear, color='gray', alpha=0.2, zorder=0,
+            label=f'Half-distance ±{err_linear_avg:.2g} mJy')
+    ax1.legend(loc='best')
 
-    ax2 = axes[1]
+    # Panel 2: Spearman vs flux (log-x)
     display_pval = "<1e-15" if combined_pval < 1e-15 else f"{combined_pval:.2e}"
     spearman_label = f"Spearman ρ (combined p={display_pval})"
-    ax2.plot(bin_centers, spearman_rhos, marker='o', color='royalblue', label=spearman_label)
-    ax2.axvline(x=x_sep_linear, color='k', linestyle='--', label=f'Cluster Boundary = {x_sep_linear:.3f} mJy')
+    ax2.plot(bin_centers, spearman_rhos, marker='o', label=spearman_label)
 
-    ymin, ymax = ax2.get_ylim()
-    width_linear = 2 * error1_linear
-    x_lower_linear = x_sep_linear - error1_linear
-    rect = patches.Rectangle(
-        (x_lower_linear, ymin),
-        width_linear,
-        ymax - ymin,
-        color='gray',
-        alpha=0.3,
-        label=f'Half-Distance Error ±{error1_linear:.3f} mJy'
-    )
-    ax2.add_patch(rect)
+    # GMM breakpoint & half-distance band on Spearman panel
+    ax2.axvline(x_sep_linear, color='k', linestyle='--', linewidth=1,
+                label=f'GMM break = {x_sep_linear:.2g} mJy')
+    ax2.axvspan(x_low_linear, x_high_linear, color='gray', alpha=0.3,
+            label=f'Half-distance ±{err_linear_avg:.2g} mJy')
 
+    ax2.set_xscale('log')
     ax2.set_xlabel("Observed Flux Density (mJy)", fontsize=14)
     ax2.set_ylabel("Spearman Correlation", fontsize=14)
     ax2.set_title(f"Spearman Correlation: {cluster_name}", fontsize=14)
     ax2.grid(True)
-    ax2.set_xscale('log')
+
+    # Match x-limits across panels
     ax2.set_xlim(ax1.get_xlim())
-    ax2.legend()
+    ax2.legend(loc='best')
 
     plt.tight_layout()
 
-    filename_safe_cluster = cluster_name.replace(' ', '_')
+    # --- Save plot ---
+    os.makedirs(save_dir, exist_ok=True)
+    filename_safe_cluster = str(cluster_name).replace(' ', '_')
     out_filepath = os.path.join(save_dir, f'gmm_spearman_{filename_safe_cluster}.png')
     plt.savefig(out_filepath, dpi=300)
     plt.close()
 
     print(f"📊 Saved plot: {out_filepath}")
 
-        
-
     return {
         'cluster': cluster_name,
-        'gmm_breakpoint': gmm_breakpoint,
-        'spearman_breakpoint': spearman_breakpoint,
-        'max_rho': max_rho,
-        'combined_pval': combined_pval,
+        'gmm_breakpoint': float(gmm_breakpoint),
+        'spearman_breakpoint': float(spearman_breakpoint),
+        'max_rho': float(max_rho),
+        'combined_pval': float(combined_pval),
     }
 
 
@@ -3148,15 +3032,6 @@ for i, cluster in enumerate(clusters):
             results.append(res)
 
 print("\n✨ All clusters processed!")
-
-
-
-
-
-#%%
-
-
-
 
 
 
@@ -3338,5 +3213,150 @@ plt.savefig("breakpoint_comparison.png", dpi=300)
 plt.show()
 
 
+
+#%%
+
+
+
+
+
+from scipy.stats import pearsonr
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# ======= Load your merged dataset =======
+df = pd.read_csv("the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv")
+
+# Remove invalid values
+df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=[
+    'Radio_Luminosity_1.4GHz', 'log10_True_SFR', 'Predicted_SFR'
+])
+
+# ======= Matplotlib ApJ-like style =======
+plt.rcParams.update({
+    "font.family": "serif",
+    "axes.labelsize": 14,
+    "axes.titlesize": 14,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12
+})
+
+# ======= 1. SFR vs Radio Luminosity =======
+fig, ax = plt.subplots(figsize=(6,5))
+
+# scatter
+ax.scatter(10**df["Radio_Luminosity_1.4GHz"], 10**df["log10_True_SFR"],
+           s=20, c='k', alpha=0.7, edgecolors='none')
+
+# regression in log-log space with uncertainties
+x_log = df["Radio_Luminosity_1.4GHz"]
+y_log = df["log10_True_SFR"]
+
+coeffs, cov = np.polyfit(x_log, y_log, 1, cov=True)
+slope, intercept = coeffs
+slope_err, intercept_err = np.sqrt(np.diag(cov))
+
+xvals_log = np.linspace(x_log.min(), x_log.max(), 100)
+yfit_log = intercept + slope * xvals_log
+
+# 1σ bounds
+yfit_upper = (intercept + intercept_err) + (slope + slope_err) * xvals_log
+yfit_lower = (intercept - intercept_err) + (slope - slope_err) * xvals_log
+
+# plot regression line
+ax.plot(10**xvals_log, 10**yfit_log, color='red', lw=1,
+        label=f"Slope={slope:.2f}±{slope_err:.2f}")
+
+# shaded 1σ uncertainty band
+ax.fill_between(10**xvals_log, 10**yfit_lower, 10**yfit_upper,
+                color='red', alpha=0.2)
+
+# ======= Pearson correlation with error =======
+r, _ = pearsonr(x_log, y_log)
+n = len(x_log)
+r_err = (1 - r**2) / np.sqrt(n - 3)  # Fisher's z standard error
+
+# Legend with slope and r
+ax.legend([f"Slope={slope:.2f}±{slope_err:.2f}",
+           f"r = {r:.2f} ± {r_err:.2f}"],
+          frameon=False)
+
+# log scales and labels
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlabel(r"$L_{\mathrm{1.4\,GHz}}\,[\mathrm{W\,Hz^{-1}}]$")
+ax.set_ylabel(r"SFR$_\mathrm{total}$ [$M_\odot\,\mathrm{yr^{-1}}$]")
+fig.tight_layout()
+
+# save figure
+plt.savefig("plot1_sfr_vs_radio_with_uncertainty.png", dpi=300)
+plt.show()
+
+
+
+#%%
+# ======= 2. Fractional Radio SFR Contribution =======
+fig, ax = plt.subplots(figsize=(6,5))
+frac = df["Predicted_SFR"] / df["log10_True_SFR"]**10
+ax.scatter(df["log10_True_SFR"]**10, frac, c='k', alpha=0.7, s=20)
+ax.axhline(0.1, color='gray', linestyle='--', lw=1)
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlabel(r"Total SFR [$M_\odot\,\mathrm{yr^{-1}}$]")
+ax.set_ylabel(r"$\mathrm{SFR_{radio}} / \mathrm{SFR_{total}}$")
+fig.tight_layout()
+plt.savefig("plot2_fractional_contribution.pdf")
+
+
+#%%
+
+# ======= 3. Cumulative Distribution of Radio Contribution =======
+fig, ax = plt.subplots(figsize=(6,5))
+frac_sorted = np.sort(frac)
+cdf = np.arange(1, len(frac_sorted)+1) / len(frac_sorted)
+ax.plot(frac_sorted, cdf, color='k')
+ax.set_xscale("log")
+ax.set_xlabel(r"$\mathrm{SFR_{radio}} / \mathrm{SFR_{total}}$")
+ax.set_ylabel("Cumulative Fraction")
+fig.tight_layout()
+plt.savefig("plot3_cdf_radio_contribution.pdf")
+
+#%%
+
+# ======= 4. Stacked Bar Chart of Median Energy Budget =======
+fig, ax = plt.subplots(figsize=(6,5))
+median_ir = np.median(df["log10_True_SFR"]**10) if "SFR_IR" in df.columns else 0
+median_radio = np.median(df["Predicted_SFR"])
+median_total = np.median(df["log10_True_SFR"]**10)
+median_uv = max(median_total - median_ir - median_radio, 0)
+
+ax.bar(0, median_ir, color='orange', label='IR')
+if median_uv > 0:
+    ax.bar(0, median_uv, bottom=median_ir, color='blue', label='UV')
+ax.bar(0, median_radio, bottom=median_ir+median_uv, color='green', label='Radio')
+
+ax.set_ylabel(r"Median SFR [$M_\odot\,\mathrm{yr^{-1}}$]")
+ax.set_xticks([])
+ax.legend(frameon=False)
+fig.tight_layout()
+plt.savefig("plot4_stacked_bar_budget.pdf")
+
+#%%
+
+# ======= 5. Radio vs IR SFR Residuals =======
+if "log10_True_SFR" in df.columns:
+    fig, ax = plt.subplots(figsize=(6,5))
+    residuals = df["Predicted_SFR"] - df["log10_True_SFR"]**10
+    ax.scatter(df["log10_True_SFR"]**10, residuals, c='k', alpha=0.7, s=20)
+    ax.axhline(0, color='gray', linestyle='--', lw=1)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xlabel(r"SFR$_\mathrm{IR}$ [$M_\odot\,\mathrm{yr^{-1}}$]")
+    ax.set_ylabel(r"SFR$_\mathrm{radio}$ - SFR$_\mathrm{total}$ [$M_\odot\,\mathrm{yr^{-1}}$]")
+    fig.tight_layout()
+    plt.savefig("plot5_radio_residuals.pdf")
+
+print("✅ All plots saved as PDF.")
 
 
