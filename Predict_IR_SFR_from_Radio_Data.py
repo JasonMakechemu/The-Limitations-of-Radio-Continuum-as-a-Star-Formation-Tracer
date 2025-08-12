@@ -27,19 +27,44 @@ to the R200. https://vizier.cds.unistra.fr/viz-bin/VizieR-4.
 MCXC Meta-Catalogue X-ray galaxy Clusters (Piffaretti+, 2011).fits
 '''
 
+# --- Imports ---
+
+import os
+import pwlf
+import joblib
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib as mpl
+import astropy.units as u
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 from astropy.io import fits
 from sklearn.svm import SVR
+from scipy.constants import c  # Speed of light in m/s
 from sklearn.base import clone
+from scipy.integrate import quad
+from scipy.stats import pearsonr
+from matplotlib.lines import Line2D
+from scipy.stats import spearmanr, chi2
+from astropy.table import Table, hstack
+from astropy.coordinates import SkyCoord
+from sklearn.pipeline import make_pipeline
+from astropy.cosmology import FlatLambdaCDM
+from sklearn.mixture import GaussianMixture
+from matplotlib.colors import ListedColormap
+from scipy.stats import median_abs_deviation
+from astropy.cosmology import Planck18 as cosmo
 from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_absolute_error
-from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-import matplotlib.pyplot as plt
+from sklearn.metrics import mean_absolute_error, median_absolute_error, r2_score, mean_squared_error
+
+
 
 # ==== Load FITS data ====
 fits_file_path = '/Users/jason/Downloads/VLA_3GHz_counterpart_array_20170210_paper_delvecchio_et_al.fits'
@@ -100,10 +125,6 @@ For each object in the data:
 4) Calculates radio flux using the inverse square law:
 '''
 
-
-from scipy.integrate import quad
-from scipy.constants import c  # Speed of light in m/s
-
 # Cosmological parameters (flat ΛCDM model)
 H0 = 67.4 * 1000 / (3.086e22)  # Hubble constant in s^-1 (70 km/s/Mpc)
 Omega_m = 0.315
@@ -135,9 +156,6 @@ for i in range(len(data)):
     
 #Output flux: W m^-2 Hz^-1 (flux density)
 
-
-
-import matplotlib.pyplot as plt
 
 # Plot
 plt.figure(figsize=(8,6))
@@ -257,9 +275,6 @@ model_dict = {
 
 
 # ==== Evaluation ====
-from sklearn.metrics import mean_absolute_error, median_absolute_error, r2_score
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 X_sets = {
     #'Full': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
@@ -457,7 +472,6 @@ test_data_1_4GHz_stellar.to_csv('test_dataset_1_4GHz_stellar_with_predictions.cs
 '''
 For COSMOS VLA dataset
 '''
-import matplotlib as mpl
 
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['font.family'] = 'serif'
@@ -690,7 +704,6 @@ all_results = {}
 
 color_modes = ['1.4GHz', '3GHz', 'IR', 'redshift', 'sfr', 'stellar_mass']
 
-import os
 
 # Create an output directory
 output_dir = "model_plots"
@@ -819,8 +832,6 @@ def plot_predicted_vs_true_sfr_redshift(results, redshifts, save_path=None):
         redshifts: array of redshift values (same order as test set)
         save_path: optional path to save the figure
     """
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     n_models = len(results)
     fig, axes = plt.subplots(n_models, 2, figsize=(14, 3.5 * n_models), sharex=True)
@@ -1026,16 +1037,6 @@ radio luminosity and SFR.
 '''
 
 
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-
-
 # ==== 1. Load pre-trained forward model and scaler (log L_1.4GHz → log SFR) ====
 mlp_model = model_dict['Neural Network (MLP)']  # Pre-trained model
 
@@ -1219,9 +1220,6 @@ calculations.
 into observable fluxes.
 '''
 
-import pandas as pd
-import numpy as np
-from astropy.cosmology import FlatLambdaCDM
 
 # Cosmology (Planck 2018 parameters)
 cosmo = FlatLambdaCDM(H0=67.4, Om0=0.315)
@@ -1410,10 +1408,6 @@ Plotting COSMOS SED fitting true vs predicted flux density
 '''
 
 
-from astropy.table import Table, hstack
-from astropy.coordinates import SkyCoord
-import astropy.units as u
-
 # File paths
 deblended_fits_file_path = '/Users/jason/Downloads/COSMOS_VLA_Deblended.fits'
 fits_file_path = '/Users/jason/Downloads/VLA_3GHz_counterpart_array_20170210_paper_delvecchio_et_al.fits'
@@ -1473,9 +1467,6 @@ plt.show()
 
 #%%
 
-
-
-import matplotlib.pyplot as plt
 
 # Example: Set colorbar limits for SFR_IR_1 and flux ratio
 sfr_vmin = -2      # Set according to your data
@@ -1568,9 +1559,6 @@ plt.show()
 Reversing to get predicted luminosity again. In cosmos
 '''
 
-import numpy as np
-import pandas as pd
-import joblib
 
 # === 1. Load saved inverse model and scalers ===
 inverse_mlp = joblib.load("inverse_mlp_model.pkl")
@@ -1641,10 +1629,6 @@ plt.show()
 
 #%%
 
-import pandas as pd
-import numpy as np
-import joblib
-import os
 
 # === 1. Load shared models and scalers ===
 inverse_mlp = joblib.load("inverse_mlp_model.pkl")
@@ -1936,8 +1920,6 @@ for cluster in clusters:
 #%%
 
 
-import os
-
 # Assuming predicted_clusters is your dict: cluster_name -> predicted DataFrame
 # base_sfr_dir is the folder containing your SFR CSVs
 
@@ -1982,10 +1964,6 @@ for cluster in clusters:
     
     sfr_ratio = merged_df[f'{cluster}_Predicted_SFR_Msun_per_yr_from_L_model'] / merged_df['SFR_Msun_per_yr_x']
 
-    # Plot histogram of SFR ratios (log10 scale)
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     plt.figure(figsize=(8,5))
     plt.hist(np.log10(sfr_ratio), bins=20, color='steelblue', edgecolor='black')
     plt.xlabel('SFR Contribution Ratio (Predicted / Observed) log10')
@@ -2004,12 +1982,6 @@ for cluster in clusters:
 '''
 For COSMOS
 '''
-
-import pandas as pd
-from astropy.io import fits
-from astropy.coordinates import SkyCoord
-from astropy import units as u
-import matplotlib.pyplot as plt
 
 # Load the CSV file
 csv_df = pd.read_csv('predicted_L_1.4GHz_from_SFR_inverse_model.csv')
@@ -2101,8 +2073,6 @@ plt.show()
 
 #convert predicted luminosity from test set to flux density COSMOS
 
-from astropy.cosmology import FlatLambdaCDM
-import numpy as np
 
 # Cosmology (Planck 2018 parameters)
 final_cosmo = FlatLambdaCDM(H0=67.4, Om0=0.315)
@@ -2144,10 +2114,7 @@ csv_matched.to_csv('the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv', i
 #%%
 
 
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-import matplotlib as mpl
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['font.family'] = 'serif'
 
@@ -2257,9 +2224,6 @@ plt.show()
 in COSMOS test
 '''
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 # Set style
 sns.set(style="whitegrid")
 
@@ -2303,9 +2267,6 @@ plt.show()
 #%%
 
 
-
-from astropy.coordinates import SkyCoord
-import astropy.units as u
 
 # Load the CSV file
 final_csv_df = pd.read_csv('/Users/jason/Desktop/Starbirth - Oxford Toomre Q Project/Project/the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv')
@@ -2362,9 +2323,6 @@ final_csv_matched.to_csv('csv_matched_with_zphot.csv', index=False)
 final_fits_matched = final_fits_df.iloc[final_matched_fits_indices].reset_index(drop=True)
 
 
-
-import numpy as np
-
 # Initialize the new columns with NaNs in the full CSV DataFrame
 final_csv_df['z_phot'] = np.nan
 final_csv_df['xf20cm'] = np.nan
@@ -2374,11 +2332,6 @@ final_csv_df.loc[final_matched, 'z_phot'] = final_fits_df.iloc[final_matched_fit
 final_csv_df.loc[final_matched, 'xf20cm'] = final_fits_df.iloc[final_matched_fits_indices]['xf20cm'].values
 
 #%%
-
-
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 plt.scatter(final_csv_df['Predicted_log10_L_1.4GHz_inverse_model'], final_csv_df['xf20cm'])
 plt.xlabel('Log10 of Predicted Flux Density (mJy ML)')
@@ -2411,9 +2364,6 @@ to essentially random parameter recovery for the flux density.
 #Plot true and predicted
 
 
-import numpy as np
-from scipy.stats import spearmanr
-import matplotlib.pyplot as plt
 
 # Bin the data by true flux
 bins = np.arange(0, 1.05, 0.05)
@@ -2446,10 +2396,6 @@ plt.show()
 #%%
 
 #Piecewise Linear Regression (Breakpoint Detection)
-
-import numpy as np
-import pwlf
-import matplotlib.pyplot as plt
 
 # Drop rows with NaN or infinite values in relevant columns
 cleaned_data = csv_matched[['True_flux_mJy', 'Predicted_flux_mJy']].replace([np.inf, -np.inf], np.nan).dropna()
@@ -2512,10 +2458,6 @@ plt.show()
 
 #%%
 
-
-from sklearn.mixture import GaussianMixture
-from matplotlib.colors import ListedColormap
-from matplotlib.lines import Line2D
 
 cluster_colors = ListedColormap(['red', 'blue'])
 
@@ -2658,32 +2600,6 @@ plt.show()
 
 
 #%%
-
-
-
-import os
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from sklearn.mixture import GaussianMixture
-from scipy.stats import spearmanr, chi2
-from astropy.cosmology import Planck18 as cosmo
-from astropy.coordinates import SkyCoord
-import astropy.units as u
-
-
-# --- Imports ---
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import spearmanr, chi2
-from sklearn.mixture import GaussianMixture
-
-from astropy.coordinates import SkyCoord
-from astropy import units as u
-from astropy.cosmology import Planck18 as cosmo
-
 
 # --- Helper functions ---
 def r500_to_angular_deg(r500_mpc, z):
@@ -3039,7 +2955,6 @@ print("\n✨ All clusters processed!")
 #%%
 # ---- After the loop finishes ----
 
-from scipy.stats import median_abs_deviation
 
 # Convert results list of dicts to DataFrame
 breakpoints_df = pd.DataFrame(results)
@@ -3134,8 +3049,6 @@ print(group['spearman_breakpoint'])
 
 #%%
     
-    
-import seaborn as sns
 
 # Prepare labels and x-axis positions
 labels = summary_df['subset']
@@ -3216,14 +3129,6 @@ plt.show()
 
 #%%
 
-
-
-
-
-from scipy.stats import pearsonr
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 
 # ======= Load your merged dataset =======
 df = pd.read_csv("the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv")
