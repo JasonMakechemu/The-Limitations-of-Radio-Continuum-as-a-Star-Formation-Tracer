@@ -6,7 +6,6 @@ Created on Mon Aug 31 14:58:34 2020
 @author: Kabelo McKabuza
 """
 
-
 import os
 import time
 import random
@@ -276,6 +275,5 @@ for cluster_name, z in clusters.items():
     print(f"Finished {cluster_name} in {(time.time() - start_time) / 60:.2f} minutes")
 
 print("\nAll clusters processed.")
-
 
 
