@@ -17,3 +17,4 @@ Splitting and scaling datasets
 Training and evaluating multiple regressors
 Plotting predictions, residuals, and redshift trends
 
+**plot_rl_vs_sfr.py** - This script creates a plot showing the correlation between 1.4GHz radio luminosity, and infrared–derived star formation rates for our VLA-COSMOS galaxies. The plot also contains information about the correlation strength, 1-sigma confidence band, our linear best fit, and the canonial linear relation between 1.4GHz radio luminosity and (IR derived) SFRs. This plot demonstrates how overestimated and underestimated SFRs are when using the canonical linear relation.
