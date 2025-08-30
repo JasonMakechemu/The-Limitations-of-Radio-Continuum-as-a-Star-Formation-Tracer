@@ -1,6 +1,6 @@
 # RL-as-a-star-formation-tracer
 
-This repository contains the code I used to obtain results for my paper (in prep) titled 'Environmental Dependence of Radio Continuum as a Star Formation Tracer'.
+This repository contains the code I used to obtain results for my paper (in prep) titled 'The Limitations of Radio Continuum as a Star Formation Tracer'.
 
 We use machine learning techniques applied to observational data from VLA, COSMOS, and allWISE catalogues to invesitage the reliabity of 1.4GHz radio luminosity is as a tracer of star formation within galaxies in a multitude of environments; regardless of morphology, mass, luminosity, and other galaxy characteristics.
 
