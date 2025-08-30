@@ -1106,35 +1106,6 @@ print(f"Forward model R² score: {r2:.4f}")
 
 
 '''
-
-Linearity here is confusing me...
-
-We see strong non-linearity, essentially no correlation or accuracy at all when it comes to
-predicting IR-SFR solely from 1.4GHz Radio luminosity (even when accounting for additional
-parameters like redshift, or 3GHz radio luminosity).
-
-Yet when we invert the modelling, where we try to find radio luminosity from a given
-IR SFR we see perfect linearity... This gives a few clues.
-
-1) The physical relationship is likely asymmetric.
-It's easier to predict L_1.4GHz from SFR than vice versa. That could mean that radio
-emission depends more tightly on SFR than SFR does on radio emission, perhaps due to
-secondary processes in radio that add noise or scatter.
-
-2) Radio luminosity is not a sufficient statistic for SFR alone.
-Other variables (e.g., galaxy mass, AGN activity, redshift evolution) might be
-influencing the forward mapping, but the reverse mapping ignores those and just
-gives a best estimate, smoothing over that complexity.
-
-3) The model is better at generating a "mean expected L_1.4GHz for a given SFR" than
-vice versa. This can be common when the target variable in the forward model (SFR)
-has more variance or noise, making learning hard.
-
-'''
-
-
-
-'''
 From predicted luminosity 
 
 
@@ -1167,7 +1138,7 @@ redshifts = [
 ]
 
 
-#see varying spectral index
+#See if can implement varying spectral index (cannot implement due to lack of data)
 alpha = 0.7  # Spectral index (same for all cluster fields)
 
 # Conversion factor: 1 Mpc = 3.085677581e22 meters
@@ -1616,25 +1587,10 @@ for cluster in clusters:
 
 
 '''
-
-ABELL 133 ML PREDICTIONS
+ABELL ML PREDICTIONS
 
 Look at individual sources – check ratio of predicted to measured SFR gives us a
 measure of SFR contribution in each source
-
-Colour based on Flux ratio
-
-make histogram of sources with their SFR contributions
-
-make ML predicted COSMOS plot
-
-
-
-Replicate for 3GHz
-
-highlight cluster members
-
-
 '''
 
 
@@ -1673,8 +1629,6 @@ print(observed_cluster['Field'].unique())
 for cluster, df in predicted_clusters.items():
     print(f"\nPredicted catalog unique Fields for {cluster}:")
     print(df['Field'].unique())
-
-
 
 for cluster in clusters:
     print(f"\n📊 Processing cluster: {cluster}")
@@ -1823,8 +1777,6 @@ for cluster in clusters:
     plt.close()
 
 
-
-
 # Assuming predicted_clusters is your dict: cluster_name -> predicted DataFrame
 # base_sfr_dir is the folder containing your SFR CSVs
 
@@ -1881,7 +1833,7 @@ for cluster in clusters:
 
 
 '''
-For COSMOS
+For VLA-COSMOS data
 '''
 
 # Load the CSV file
@@ -1938,9 +1890,6 @@ plt.xlim(20, 30)
 plt.ylim(20, 30)
 plt.show()
 
-
-
-
 plt.figure(figsize=(8,6))
 plt.scatter(csv_matched['log10_True_SFR'], np.log10(csv_matched['Predicted_SFR']), s=10, alpha=0.6)
 plt.xlabel('true SFR')
@@ -1950,8 +1899,6 @@ plt.xlim(0, 5)
 plt.ylim(0, 5)
 plt.show()
 
-
-
 plt.scatter(csv_matched['log10_True_SFR'], csv_matched['Predicted_log10_L_1.4GHz_inverse_model'], s=10, alpha=0.6)
 plt.xlabel('true SFR')
 plt.ylabel('Predicted L (from COSMOS VLA)')
@@ -1959,8 +1906,6 @@ plt.title('True SFR vs Predicted Luminosity')
 plt.ylim(20, 25)
 plt.xlim(0, 5)
 plt.show()
-
-
 
 plt.scatter(np.log10(csv_matched['Predicted_SFR']), csv_matched['Predicted_log10_L_1.4GHz_inverse_model'], s=10, alpha=0.6)
 plt.xlabel('Predicted SFR')
@@ -1971,11 +1916,12 @@ plt.xlim(0, 5)
 plt.show()
 
 
+'''
+Convert predicted luminosity to flux density in VLA-COSMOS test set
 
-#convert predicted luminosity from test set to flux density COSMOS
+Cosmology (Planck 2018 parameters)
+'''
 
-
-# Cosmology (Planck 2018 parameters)
 final_cosmo = FlatLambdaCDM(H0=67.4, Om0=0.315)
 
 final_alpha = 0.7  # spectral index
@@ -2009,7 +1955,6 @@ csv_matched['True_flux_mJy'] = csv_matched.apply(true_luminosity_to_flux, axis=1
 
 # Save to CSV
 csv_matched.to_csv('the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv', index=False)
-
 
 
 mpl.rcParams['mathtext.fontset'] = 'cm'
