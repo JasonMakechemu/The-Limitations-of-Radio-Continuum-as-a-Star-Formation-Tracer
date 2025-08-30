@@ -6,22 +6,18 @@ Created on Mon Aug 18 15:36:57 2025
 @author: jason
 """
 
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 """
-Showcase plot: Radio Luminosity vs Star Formation Rate (your real data)
------------------------------------------------------------------------
+Showcase plot: Radio Luminosity vs Star Formation Rate 
+
 What it makes:
-- log10(SFR) vs log10(L_1.4GHz) scatter (your IR-based SFRs against radio luminosities)
-- Overlays your measured best-fit slope line (fit to YOUR data)
-- ±1σ shaded region around the best-fit (from residual scatter)
+- log10(SFR) vs log10(L_1.4GHz) scatter
+- Overlays your measured best-fit slope line 
+- ±1σ shaded region around the best-fit 
 - Overlays the canonical unity-slope line (m=1) for comparison
-- Optionally annotates the fraction of sources with S_1.4 < 0.2 mJy (if flux column available)
+- Optionally annotates the fraction of sources with S_1.4 < 0.2 mJy
 - Saves figure as PNG and PDF
 
-How to run:
+How to run (in terminal): 
     python plot_rl_vs_sfr.py --input your_data.csv --outfig rl_vs_sfr_showcase
 
 Expected columns (it will try to auto-detect common names):
