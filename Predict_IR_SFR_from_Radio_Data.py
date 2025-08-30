@@ -14,21 +14,7 @@ We load the .fits file path which contains sources from
 the VLA-COSMOS 3 GHz Large Project.
 '''
 
-'''
-https://www.aanda.org/articles/aa/pdf/2022/01/aa41488-21.pdf - Knowles et. al, where I just
-got cluster names and their redshifts. - Table2_MGCLS_compactcat_DR1 (in offsets_iter.py)
-
-'''
-
-'''
-MCXC Meta-Catalogue X-ray galaxy Clusters (Piffaretti+, 2011) - Where I get R500 which can be converted
-to the R200. https://vizier.cds.unistra.fr/viz-bin/VizieR-4.
-
-MCXC Meta-Catalogue X-ray galaxy Clusters (Piffaretti+, 2011).fits
-'''
-
 # --- Imports ---
-
 import os
 import pwlf
 import joblib
@@ -64,8 +50,6 @@ from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, median_absolute_error, r2_score, mean_squared_error
 
-
-
 # ==== Load FITS data ====
 fits_file_path = '/Users/jason/Downloads/VLA_3GHz_counterpart_array_20170210_paper_delvecchio_et_al.fits'
 
@@ -73,21 +57,14 @@ with fits.open(fits_file_path) as hdul:
     data_fits = hdul[1].data
     data = pd.DataFrame({col: data_fits[col].byteswap().newbyteorder() for col in data_fits.columns.names})
 
-
 data = data[(data != -99).all(axis=1)].dropna()
 
 print(data.columns)
 
-#%%
-
 
 '''
-Here I am taking data that I am interested in, from the COSMOS VLA 3GHz dataset. These
-are what will go into the various models that I am training.
-
-The code is then cleaning the dataset by removing rows with invalid or missing values.
+Cleaning the dataset by removing rows with invalid or missing values.
 '''
-
 
 # ==== Clean & Format ====
 data = pd.DataFrame({
@@ -106,8 +83,6 @@ data = data[(data != -99).all(axis=1)].dropna()
 
 data_clean = data.copy()
 
-
-#%%
 
 '''
 For the COSMOS-VLA dataset
@@ -177,9 +152,6 @@ cbar.set_label('log SFR M_s/yr')
 
 plt.savefig('radio_flux_vs_redshift.png', dpi=300) 
 plt.show()
-
-#%%
-
 
 '''
 
@@ -270,10 +242,6 @@ model_dict = {
     'Neural Network (MLP)': MLPRegressor(hidden_layer_sizes=(64, 32), max_iter=1000, random_state=42)
 }
 
-
-#%%
-
-
 # ==== Evaluation ====
 
 X_sets = {
@@ -284,7 +252,6 @@ X_sets = {
     #'1.4GHz + Stellar Mass': (X_train_1_4GHz_stellar_mass_scaled, X_test_1_4GHz_stellar_mass_scaled, y_train_1_4GHz_stellar_mass, y_test_1_4GHz_stellar_mass),
     '1.4GHz only': (X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
 }
-
 
 
 for set_name, (X_train, X_test, y_train, y_test) in X_sets.items():
@@ -327,9 +294,6 @@ for set_name, (X_train, X_test, y_train, y_test) in X_sets.items():
         plt.show()
 
 
-
-#%%
-
 '''
 Saving test set for the COSMOS VLA predictions
 '''
@@ -349,12 +313,6 @@ test_data.reset_index(drop=True, inplace=True)
 
 # Save to CSV
 test_data.to_csv('test_dataset.csv', index=False)
-
-
-
-
-
-#%%
 
 
 '''
@@ -379,13 +337,10 @@ Point color: determined by color_by 'example parameter'
 Adds:
 Diagonal dashed 1-1 line 
 
-
 Text box: shows MAE % and Median Error %
 Colorbar: matches your chosen coloring variable
 
 color_vals is log-transformed if needed (e.g., np.log10(z_vals)).
-
-
 '''
 
 
@@ -411,7 +366,8 @@ def train_and_evaluate(models, X_train, X_test, y_train, y_test):
         print(f"{name}: MAE% = {mae_pct:.2f}%, Median Error% = {med_pct:.2f}%")
     return results, preds
 
-# Train and get predictions
+# Train and get predictions (everything greyed out except the 1.4GHz only model).
+
 # Full feature set
 '''results_full, preds_full = train_and_evaluate(
     model_dict, X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full)
@@ -436,7 +392,6 @@ results_1_4GHz_stellar, preds_1_4GHz_stellar = train_and_evaluate(
 results_1_4GHz, preds_1_4GHz = train_and_evaluate(
     model_dict, X_train_1_4GHz_scaled, X_test_1_4GHz_scaled, y_train_1_4GHz, y_test_1_4GHz)
 
-#%%
 # Example for the 1.4 GHz model's predictions using Neural Network (MLP)
 y_pred_linear_1_4GHz = preds_1_4GHz['Neural Network (MLP)']
 #y_pred_linear_1_4GHz_stellar_mass = preds_1_4GHz_stellar['Neural Network (MLP)']
@@ -453,8 +408,9 @@ test_data_1_4GHz['Redshift'] = data_clean['Photometric_Redshift']
 test_data_1_4GHz.reset_index(drop=True, inplace=True)
 test_data_1_4GHz.to_csv('test_dataset_1_4GHz_with_predictions.csv', index=False)
 
-#%%
 '''
+inclusion of stellar mass is greyed out
+
 test_data_1_4GHz_stellar = X_test_1_4GHz_stellar_mass.copy()
 test_data_1_4GHz_stellar['log10_True_SFR'] = y_test_full
 test_data_1_4GHz_stellar['RA'] = data_clean.loc[X_test_1_4GHz_stellar_mass.index, 'RA']
@@ -464,10 +420,8 @@ test_data_1_4GHz_stellar['Redshift'] = data_clean.loc[X_test_1_4GHz_stellar_mass
 
 test_data_1_4GHz_stellar.reset_index(drop=True, inplace=True)
 test_data_1_4GHz_stellar.to_csv('test_dataset_1_4GHz_stellar_with_predictions.csv', index=False)
-
 '''
 
-#%%
 
 '''
 For COSMOS VLA dataset
@@ -565,13 +519,15 @@ plot_true_vs_pred(results_1_4GHz,
                   data_clean=data_clean)
 
 '''
+inclusion of stellar mass is greyed out
+
 plot_true_vs_pred(results_1_4GHz_stellar,
                    title="Predicted vs True SFR (Colored by Stellar Mass)",
                    color_by='stellar_mass',
                    save_path='pred_vs_true_sfr_stellar_mass.png',
                    data_clean=data_clean)
 '''
-#%%
+
 
 '''
 For COSMOS VLA dataset
@@ -665,9 +621,6 @@ def plot_residuals(results, title, color_by='redshift', save_path=None, data_cle
 
 
 
-#%%
-
-
 '''
 For COSMOS VLA dataset
 
@@ -679,18 +632,20 @@ We then visualise performance and residuals for each model.
 Color-code results based on astrophysical parameters (e.g., redshift, luminosity).
 
 Save plots for easy inspection and reporting.
-
 '''
 
 
 '''
-To avoid this error -> ValueError: X has 1 features, but MLPRegressor is expecting 2 features as input.
+To avoid this error -> "ValueError: X has 1 features, but MLPRegressor is expecting 2 features as input."
 
-Make sure the last feature set in the dictionaryhas the same numer of features (ideally the same model),
+Make sure the last feature set in the dictionary has the same numer of features (ideally the same model),
 that is being reshaped in the variable log_sfr_pred.
 '''
 
 # ==== Evaluate All Feature Sets ====
+
+#Only including the 1.4GHz model
+
 feature_sets = {
     #'Full Features': (X_train_full_scaled, X_test_full_scaled, y_train_full, y_test_full),
     #'Radio Only': (X_train_radio_scaled, X_test_radio_scaled, y_train_radio, y_test_radio),
@@ -734,10 +689,6 @@ for name, (X_train, X_test, y_train, y_test) in feature_sets.items():
                        color_by=color_by,
                        save_path=residuals_path,
                        data_clean=data_clean)
-
-
-
-#%%
 
 
 '''
@@ -810,17 +761,12 @@ plot_residuals_vs_redshift(
 )
 
 
-#%%
-
 '''
-
 For COSMOS VLA dataset
 
 This block introduces a side-by-side diagnostic plot that compares true vs. predicted
 log(SFR) as a function of redshift. 
-
 '''
-
 
 def plot_predicted_vs_true_sfr_redshift(results, redshifts, save_path=None):
     """
@@ -845,7 +791,7 @@ def plot_predicted_vs_true_sfr_redshift(results, redshifts, save_path=None):
         true_log = np.array(true_log)
         pred_log = np.array(pred_log)
 
-        # Calculate 3-sigma thresholds
+        # Calculate 3-sigma thresholds (not used)
         #true_mean, true_std = np.mean(true_log), np.std(true_log)
         #pred_mean, pred_std = np.mean(pred_log), np.std(pred_log)
 
@@ -901,10 +847,6 @@ true_log = plot_predicted_vs_true_sfr_redshift(
 )
 
 
-
-#%%
-
-
 '''
 For COSMOS VLA dataset
 
@@ -949,8 +891,6 @@ def plot_scatter_vs_redshift(model_name, y_true_log, y_pred_log, redshifts, bins
     plt.show()
 
 
-
-
 # Get residuals and redshifts from the test set
 best_model_name = 'Random Forest'  # Or whichever model you're interested in
 y_true_log, y_pred_log, *_ = results_1_4GHz[best_model_name]
@@ -961,11 +901,6 @@ z_vals = data_clean.iloc[z_test]['Photometric_Redshift'].values
 
 # Plot scatter vs redshift
 plot_scatter_vs_redshift(best_model_name, y_true_log, y_pred_log, z_vals, bins=20)
-
-
-
-
-#%%
 
 
 
@@ -1009,10 +944,6 @@ cluster.
 
 8) Plots the original forward model curve (log SFR → log L) for visual validation.
 
-
-    
-    
-    
 
 
 Predict SFR from real radio data in COSMOS. True_SFR is true COSMOS SFR
@@ -1174,9 +1105,6 @@ print(f"Forward model RMSE: {rmse:.4f}")
 print(f"Forward model R² score: {r2:.4f}")
 
 
-#%%%
-
-
 '''
 
 Linearity here is confusing me...
@@ -1204,8 +1132,6 @@ has more variance or noise, making learning hard.
 
 '''
 
-
-#%%
 
 
 '''
@@ -1274,9 +1200,6 @@ for name, z in zip(cluster_names, redshifts):
 
     print(f"Processed {name}: saved to {output_file}")
 
-
-
-#%%
 
 '''
 This final code block evaluates how well the ML-predicted radio flux densities
@@ -1400,7 +1323,6 @@ for cluster in clusters:
 
 print("\nProcessing complete.")
 
-#%%
 
 
 '''
@@ -1462,10 +1384,6 @@ plt.tight_layout()
 plt.savefig('Pred_vs_Obs_1.4GHz_RL_SED_fitting.png', dpi=300)
 plt.show()
 
-
-
-
-#%%
 
 
 # Example: Set colorbar limits for SFR_IR_1 and flux ratio
@@ -1552,9 +1470,6 @@ plt.show()
 
 
 
-
-#%%
-
 '''
 Reversing to get predicted luminosity again. In cosmos
 '''
@@ -1625,9 +1540,6 @@ plt.savefig('radio_flux_vs_redshift.png', dpi=300)
 plt.show()
 
 
-
-
-#%%
 
 
 # === 1. Load shared models and scalers ===
@@ -1703,10 +1615,6 @@ for cluster in clusters:
 
 
 
-#%%
-
-
-
 '''
 
 ABELL 133 ML PREDICTIONS
@@ -1729,7 +1637,6 @@ highlight cluster members
 
 '''
 
-#%%
 
 
 # === 1. Cluster list ===
@@ -1917,8 +1824,6 @@ for cluster in clusters:
 
 
 
-#%%
-
 
 # Assuming predicted_clusters is your dict: cluster_name -> predicted DataFrame
 # base_sfr_dir is the folder containing your SFR CSVs
@@ -1973,10 +1878,6 @@ for cluster in clusters:
     plt.tight_layout()
     plt.show()
 
-
-
-
-#%%
 
 
 '''
@@ -2069,7 +1970,7 @@ plt.ylim(20, 25)
 plt.xlim(0, 5)
 plt.show()
 
-#%%
+
 
 #convert predicted luminosity from test set to flux density COSMOS
 
@@ -2111,10 +2012,6 @@ csv_matched.to_csv('the_matched_predicted_L_1.4GHz_from_SFR_flux_density.csv', i
 
 
 
-#%%
-
-
-
 mpl.rcParams['mathtext.fontset'] = 'cm'
 mpl.rcParams['font.family'] = 'serif'
 
@@ -2142,7 +2039,7 @@ plt.legend()
 plt.show()
 
 
-#%%
+
 # ---------- Colored by SFR (True or Predicted) ----------
 plt.figure(figsize=(8, 6))
 sc = plt.scatter(csv_matched['True_flux_mJy'],
@@ -2216,10 +2113,6 @@ plt.show()
 
 
 
-
-
-#%%
-
 '''
 in COSMOS test
 '''
@@ -2264,7 +2157,7 @@ plt.title('Histogram of Predicted/True Log10 SFR Ratio COSMOS', fontsize=14)
 plt.tight_layout()
 plt.show()
 
-#%%
+
 
 
 
@@ -2331,7 +2224,7 @@ final_csv_df['xf20cm'] = np.nan
 final_csv_df.loc[final_matched, 'z_phot'] = final_fits_df.iloc[final_matched_fits_indices]['z_phot'].values
 final_csv_df.loc[final_matched, 'xf20cm'] = final_fits_df.iloc[final_matched_fits_indices]['xf20cm'].values
 
-#%%
+
 
 plt.scatter(final_csv_df['Predicted_log10_L_1.4GHz_inverse_model'], final_csv_df['xf20cm'])
 plt.xlabel('Log10 of Predicted Flux Density (mJy ML)')
@@ -2355,8 +2248,6 @@ to essentially random parameter recovery for the flux density.
 '''
 
 
-
-#%%
 
 
 
@@ -2392,8 +2283,6 @@ plt.show()
 
 
 
-
-#%%
 
 #Piecewise Linear Regression (Breakpoint Detection)
 
@@ -2433,10 +2322,6 @@ plt.show()
 
 
 
-#%%
-
-
-
 # Add ratio column
 csv_matched['Flux_Ratio'] = csv_matched['Predicted_flux_mJy'] / csv_matched['True_flux_mJy']
 
@@ -2454,9 +2339,6 @@ plt.grid(True)
 plt.legend()
 plt.show()
 
-
-
-#%%
 
 
 cluster_colors = ListedColormap(['red', 'blue'])
@@ -2555,9 +2437,6 @@ print(f"GMM flux breakpoint: {flux_break:.4f} mJy ± {flux_error:.4f} mJy")
 print(f"(Log-space: log10(flux) = {log_flux_break:.4f} ± {log_flux_error:.4f})")
 
 
-
-#%%
-
 # ------
 # Task 2: Fraction of non-AGN sources in each cluster
 # ------
@@ -2598,8 +2477,6 @@ plt.show()
 
 
 
-
-#%%
 
 # --- Helper functions ---
 def r500_to_angular_deg(r500_mpc, z):
@@ -2841,7 +2718,7 @@ def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./
     }
 
 
-#%%
+
 
 # --- Main execution loop ---
 
@@ -2952,7 +2829,7 @@ print("\n✨ All clusters processed!")
 
 
 
-#%%
+
 # ---- After the loop finishes ----
 
 
@@ -3019,7 +2896,6 @@ for subset_name, group in breakpoints_df_clean.groupby('subset'):
     for _, row in group.iterrows():
         print(f" {row['cluster']:<30} | GMM: {row['gmm_breakpoint']:.3f} | Spearman: {row['spearman_breakpoint']:.3f}")
 
-#%%
 
 # Ensure DataFrame is clean and sorted
 breakpoints_df_clean = breakpoints_df.dropna(subset=['gmm_breakpoint', 'spearman_breakpoint'])
@@ -3042,12 +2918,11 @@ for subset_name, subset_group in breakpoints_df_clean.groupby('subset'):
         print(f"{cluster_name:<30} | {gmm_mean:.3f} ± {gmm_std:.3f}         | {spearman_mean:.3f} ± {spearman_std:.3f}")
 
 
-#%%
 
 print(group['gmm_breakpoint'])
 print(group['spearman_breakpoint'])
 
-#%%
+
     
 
 # Prepare labels and x-axis positions
@@ -3076,7 +2951,7 @@ plt.show()
 print(summary_df)
 
 
-#%%
+
 
 
 labels = summary_df['subset']
@@ -3127,7 +3002,6 @@ plt.show()
 
 
 
-#%%
 
 
 # ======= Load your merged dataset =======
@@ -3200,7 +3074,7 @@ plt.show()
 
 
 
-#%%
+
 # ======= 2. Fractional Radio SFR Contribution =======
 fig, ax = plt.subplots(figsize=(6,5))
 frac = df["Predicted_SFR"] / df["log10_True_SFR"]**10
@@ -3214,7 +3088,6 @@ fig.tight_layout()
 plt.savefig("plot2_fractional_contribution.pdf")
 
 
-#%%
 
 # ======= 3. Cumulative Distribution of Radio Contribution =======
 fig, ax = plt.subplots(figsize=(6,5))
@@ -3227,7 +3100,7 @@ ax.set_ylabel("Cumulative Fraction")
 fig.tight_layout()
 plt.savefig("plot3_cdf_radio_contribution.pdf")
 
-#%%
+
 
 # ======= 4. Stacked Bar Chart of Median Energy Budget =======
 fig, ax = plt.subplots(figsize=(6,5))
@@ -3247,7 +3120,7 @@ ax.legend(frameon=False)
 fig.tight_layout()
 plt.savefig("plot4_stacked_bar_budget.pdf")
 
-#%%
+
 
 # ======= 5. Radio vs IR SFR Residuals =======
 if "log10_True_SFR" in df.columns:
