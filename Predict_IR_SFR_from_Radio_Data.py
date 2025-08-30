@@ -2059,7 +2059,7 @@ plt.show()
 
 
 '''
-in COSMOS test
+COSMOS test-set
 '''
 
 # Set style
@@ -2190,15 +2190,9 @@ For SED Fitting: The SED fitting code might be failing to converge for most sour
 using an inappropriate set of templates, or encountering severe degeneracies that lead
 to essentially random parameter recovery for the flux density.
 
+Correlation Analysis (Across Flux Bins)
+Plot true and predicted
 '''
-
-
-
-
-
-#Correlation Analysis (Across Flux Bins)
-#Plot true and predicted
-
 
 
 # Bin the data by true flux
@@ -2227,14 +2221,14 @@ plt.show()
 
 
 
-
-
 #Piecewise Linear Regression (Breakpoint Detection)
 
-# Drop rows with NaN or infinite values in relevant columns
+#Drop rows with NaN or infinite values in relevant columns
+
 cleaned_data = csv_matched[['True_flux_mJy', 'Predicted_flux_mJy']].replace([np.inf, -np.inf], np.nan).dropna()
 
 # Sort by True Flux
+
 sorted_data = cleaned_data.sort_values('True_flux_mJy')
 x = sorted_data['True_flux_mJy'].values
 y = sorted_data['Predicted_flux_mJy'].values
@@ -2264,9 +2258,6 @@ plt.grid(True)
 plt.show()
 
 
-
-
-
 # Add ratio column
 csv_matched['Flux_Ratio'] = csv_matched['Predicted_flux_mJy'] / csv_matched['True_flux_mJy']
 
@@ -2283,8 +2274,6 @@ plt.title('Flux Ratio Trend vs True Flux')
 plt.grid(True)
 plt.legend()
 plt.show()
-
-
 
 cluster_colors = ListedColormap(['red', 'blue'])
 
@@ -2419,7 +2408,6 @@ plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.savefig('agn_fraction_per_cluster.png', dpi=300, bbox_inches='tight')
 plt.show()
-
 
 
 
@@ -2664,7 +2652,6 @@ def run_gmm_spearman_analysis(cluster_name, data, exclude_outliers, save_dir='./
 
 
 
-
 # --- Main execution loop ---
 
 # Your clusters, redshifts, r500 (Mpc) already defined
@@ -2777,7 +2764,6 @@ print("\n✨ All clusters processed!")
 
 # ---- After the loop finishes ----
 
-
 # Convert results list of dicts to DataFrame
 breakpoints_df = pd.DataFrame(results)
 
@@ -2862,13 +2848,10 @@ for subset_name, subset_group in breakpoints_df_clean.groupby('subset'):
 
         print(f"{cluster_name:<30} | {gmm_mean:.3f} ± {gmm_std:.3f}         | {spearman_mean:.3f} ± {spearman_std:.3f}")
 
-
-
 print(group['gmm_breakpoint'])
 print(group['spearman_breakpoint'])
 
 
-    
 
 # Prepare labels and x-axis positions
 labels = summary_df['subset']
@@ -2891,9 +2874,6 @@ ax.set_title('Mean and Median Breakpoints with Error Bars')
 ax.legend()
 plt.tight_layout()
 plt.show()
-
-
-print(summary_df)
 
 
 
@@ -2946,7 +2926,9 @@ plt.savefig("breakpoint_comparison.png", dpi=300)
 plt.show()
 
 
-
+'''
+Test plots just to visualise different features and statistics
+'''
 
 
 # ======= Load your merged dataset =======
