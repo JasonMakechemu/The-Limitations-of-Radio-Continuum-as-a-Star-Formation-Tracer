@@ -31,44 +31,44 @@ os.makedirs(output_dir, exist_ok=True)
 
 # Clusters and redshifts
 clusters = {
-    #'Abell 133': 0.057,
-    #'Abell 141': 0.2300,
-    #'Abell 68': 0.2546,
-    #'Abell 194': 0.018,
-    #'Abell 209': 0.21,
-    #'Abell 22': 0.206,
-    #'Abell 2485': 0.247,
-    #'Abell 2597': 0.085,
-    #'Abell 2645': 0.251,
-    #'Abell 2667': 0.230,
-    #'Abell 2744': 0.308,
-    #'Abell 2751': 0.107,
-    #'Abell 2811': 0.108,
-    #'Abell 2895': 0.227,
-    #'Abell 3365': 0.093,
-    #'Abell 3376': 0.046,
-    #'Abell 33': 0.280,
-    #'Abell 3558': 0.048,
-    #'Abell 3562': 0.049,
-    #'Abell 3667': 0.056,
-    #'Abell 370': 0.375,
-    #'Abell 4038': 0.028,
-    #'Abell 521': 0.253,
-    #'Abell 545': 0.154,
-    #'Abell 548': 0.042,
-    #'Abell 85': 0.055,
-    #'Abell S1063': 0.348,
-    #'Abell S1121': 0.190,
-    #'Abell S295': 0.300,
-    #'ElGordo': 0.870,
-    #'J0014.3-6604': 0.155,
-    #'J0027.3-5015': 0.145,
-    #'J0051.1-4833': 0.187,
-    #'J0108.5-4020': 0.143,
-    #'J0117.8-5455': 0.251,
-    #'J0145.0-5300': 0.188,
-    #'J0145.2-6033': 0.184,
-    #'J0212.8-4707': 0.115,
+    'Abell 133': 0.057,
+    'Abell 141': 0.2300,
+    'Abell 68': 0.2546,
+    'Abell 194': 0.018,
+    'Abell 209': 0.21,
+    'Abell 22': 0.206,
+    'Abell 2485': 0.247,
+    'Abell 2597': 0.085,
+    'Abell 2645': 0.251,
+    'Abell 2667': 0.230,
+    'Abell 2744': 0.308,
+    'Abell 2751': 0.107,
+    'Abell 2811': 0.108,
+    'Abell 2895': 0.227,
+    'Abell 3365': 0.093,
+    'Abell 3376': 0.046,
+    'Abell 33': 0.280,
+    'Abell 3558': 0.048,
+    'Abell 3562': 0.049,
+    'Abell 3667': 0.056,
+    'Abell 370': 0.375,
+    'Abell 4038': 0.028,
+    'Abell 521': 0.253,
+    'Abell 545': 0.154,
+    'Abell 548': 0.042,
+    'Abell 85': 0.055,
+    'Abell S1063': 0.348,
+    'Abell S1121': 0.190,
+    'Abell S295': 0.300,
+    'ElGordo': 0.870,
+    'J0014.3-6604': 0.155,
+    'J0027.3-5015': 0.145,
+    'J0051.1-4833': 0.187,
+    'J0108.5-4020': 0.143,
+    'J0117.8-5455': 0.251,
+    'J0145.0-5300': 0.188,
+    'J0145.2-6033': 0.184,
+    'J0212.8-4707': 0.115,
     'J0216.3-4816': 0.163,
     'J0217.2-5244': 0.343,
     'J0225.9-4154': 0.220,
@@ -163,8 +163,6 @@ def calculate_star_formation_rate(w4_mag, redshift):
     nuLnu = compute_nuLnu_from_flux_density(flux_density, redshift)
     return estimate_sfr_from_luminosity(nuLnu)
 
-
-
 def query_with_retry(coord, retries=5, base_delay=1.0, max_delay=30):
     for attempt in range(retries):
         try:
@@ -177,8 +175,6 @@ def query_with_retry(coord, retries=5, base_delay=1.0, max_delay=30):
             time.sleep(wait)
     print(f"All {retries} retries failed for coordinate {coord}.")
     return None
-
-
 
 # Load table
 full_table = Table.read(input_file)
@@ -275,5 +271,3 @@ for cluster_name, z in clusters.items():
     print(f"Finished {cluster_name} in {(time.time() - start_time) / 60:.2f} minutes")
 
 print("\nAll clusters processed.")
-
-
