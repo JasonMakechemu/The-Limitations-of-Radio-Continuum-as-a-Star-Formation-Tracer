@@ -1,4 +1,4 @@
-# RL-as-a-star-formation-tracer
+#  "The data for the paper 'The Limitations of Radio Continuum as a Star Formation Tracer' where all the code for the analysis, data formatting, and plotting is contained.
 
 This repository contains the code I used to obtain results for my paper (in prep) titled 'The Limitations of Radio Continuum as a Star Formation Tracer'.
 
