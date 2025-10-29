@@ -1,0 +1,23 @@
+{
+  "creators": [
+    {
+      "name": "Jason Shingirai Makechemu",
+      "affiliation": "Physics Department, Lancaster University; Department of Mathematical Sciences, University of South Africa",
+      "orcid": "0009-0009-6545-8710"
+    },
+    {
+      "name": "James Okwe Chibueze",
+      "affiliation": "Department of Mathematical Sciences, University of South Africa",
+      "orcid": "0000-0002-9875-7436"
+    },
+    {
+      "name": "Brooke Simmons",
+      "affiliation": "Physics Department, Lancaster University",
+      "orcid": "0000-0001-5882-3323"
+    }
+  ],
+  "title": "Data and Code for: The Limitations of Radio Continuum as a Star Formation Tracer",
+  "description": "This repository contains data and code accompanying the publication 'The Limitations of Radio Continuum as a Star Formation Tracer'.",
+  "access_right": "open",
+  "license": "MIT"
+}
